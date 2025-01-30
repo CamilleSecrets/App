@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Camille</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@400;700&family=Poppins:wght@400;700&family=Oswald:wght@400;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <style>
+ body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Poppins', sans-serif;
+                  color:black;
+      background: linear-gradient(to right, blue, red);
+      background-size: 200% 200%;
+      animation: gradientAnimation 8s linear infinite;
+    }
+
+    /* Animação do gradiente */
+    @keyframes gradientAnimation {
+      0% {
+        background: linear-gradient(to right, blue, red);
+      }
+      25% {
+        background: linear-gradient(to right, red, yellow);
+      }
+      50% {
+        background: linear-gradient(to right, yellow, green);
+      }
+      75% {
+        background: linear-gradient(to right, green, orange);
+      }
+      100% {
+        background: linear-gradient(to right, orange, blue);
+      }
+    }
+
+    main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Garante o conteúdo alinhado no topo */
+  width: 100%; /* Garantir que ocupe a largura da tela */
+}
+
+    .container {
+      width: 450px;
+      max-width: 100%;
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #333;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #f1f1f1;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    #loading {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 18px;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      margin-top: 60px;
+    }
+
+    footer {
+  background: linear-gradient(to right, aquamarine,fuchsia );
+  color:white;
+  text-align: center;
+  font-size: 18px;
+  padding: 10px 0;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+  </style>
+</head>
+<body>
+  <main style="position: relative;">
+    <img src="top.png" alt="Imagem Topo" class="img-fluid">
+    <img src="camille.png" style="margin-top: 5px;" alt="Imagem Topo" class="img-fluid">
+  
+    <div class="container text-center border p-4" style="position: relative; padding-bottom: 120px;">
+      <h5>Alimentos e calorias</h5>
+      <h5>Coloque uma foto do seu prato de comidas</h5>
+
+      <p style="color: red;">Para um melhor desempenho organize pratos bonitos e fotos de qualidade</p>
+      <form id="imageForm" method="POST" enctype="multipart/form-data">
+        <input type="file" class="form-control mb-3" name="image" id="imageInput" accept="image/*" required />
+        <button type="submit" class="btn btn-primary w-100">Enviar</button>
+      </form>
+      <div id="loading" style="display: none;">
+        <span id="loadingText">Carregando...</span>
+        <span id="countdown">60</span> segundos restantes
+      </div>
+      <div id="result"></div>
+  
+      <!-- Imagem no canto inferior direito -->
+      <img src="kiss.png" class="img-fluid" alt="Imagem Inferior Direita" style="
+        position: absolute;
+        bottom: 10px;
+        top: -70px;
+        right: 0px;
+        width: 100px; /* Ajuste o tamanho da imagem conforme necessário */
+        height: auto;
+      ">
+    </div>
+
+<div id="div1" style="visibility: hidden;"><h1>Parabéns explore os mistérios de Camille Secrets</h1><br></div>
+
+</main>
+  <footer>
+    © 2025 Camille Secrets
+  </footer>
+  <script>
+    document.getElementById('imageForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const formData = new FormData();
+      const imageInput = document.getElementById('imageInput');
+      const loadingDiv = document.getElementById('loading');
+      const loadingText = document.getElementById('loadingText');
+      const countdown = document.getElementById('countdown');
+      const resultDiv = document.getElementById('result');
+      const submitButton = event.target.querySelector('button');
+
+      if (!imageInput.files[0]) {
+        resultDiv.textContent = 'Por favor, selecione uma imagem.';
+        return;
+      }
+
+      formData.append('image', imageInput.files[0]);
+
+      // Exibe o loading e desabilita o botão
+      loadingDiv.style.display = 'block';
+      submitButton.disabled = true;
+      resultDiv.textContent = '';
+
+      // Contagem regressiva de 60 segundos
+      let timeLeft = 60;
+      countdown.textContent = timeLeft;
+
+      const interval = setInterval(() => {
+        timeLeft -= 1;
+        countdown.textContent = timeLeft;
+        if (timeLeft <= 0) {
+          clearInterval(interval);
+          loadingText.textContent = 'Tempo esgotado!';
+        }
+      }, 1000);
+
+      try {
+        const response = await fetch('https://camilla-screts-4-0.onrender.com/process', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error(`Erro: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        // Exibe a resposta do servidor
+        resultDiv.textContent = data.result;
+      } catch (error) {
+        resultDiv.textContent = `Erro: ${error.message}`;
+      } finally {
+        // Esconde o loading e reativa o botão
+        clearInterval(interval);
+        loadingDiv.style.display = 'none';
+        submitButton.disabled = false;
+      }
+    });
+  </script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
